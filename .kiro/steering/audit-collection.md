@@ -1,0 +1,86 @@
+---
+inclusion: manual
+description: Audit a body of related agent documents — a `.kiro/` tree, a `~/.claude/skills/` directory, a `.cursor/rules/` directory, a `.agent/` tree, a project's `docs/agent/` collection, or any directory of RULE/SKILL/WORKFLOW files. Runs per-document audits plus the cross-document refactoring pass.
+---
+
+# Audit Collection
+
+Audit a body of related agent documents. Runs per-document audits and adds the cross-document refactoring pass.
+
+## When to Use
+
+- Reviewing a project's `.kiro/` tree, `~/.claude/skills/` directory, `.cursor/rules/` directory, `.agent/` tree, or `docs/agent/` collection
+- Reorganizing an organization's standard SOPs / agent rules
+- Migrating documents between vendors and consolidating
+- Onboarding a new agent doc collection from another project / person
+
+## When NOT to Use
+
+- Auditing one document → use `audit-rule`, `audit-skill`, or `audit-workflow` directly
+- Just looking up which checklist applies → read `steering-audit-suite/shared/`
+
+## Workflow
+
+1. **Enumerate the documents in scope.** List every file that prescribes agent behavior (RULE, SKILL, WORKFLOW), with paths.
+2. **Classify each document by type.** Use discriminators in `steering-audit-suite/shared/doc-types.md`. Note any document whose type doesn't match its file location/format (Reformat candidate).
+3. **Per-document audit pass.** For each document, invoke the appropriate single-doc audit (audit-rule, audit-skill, or audit-workflow). Collect findings.
+4. **Cross-document refactoring pass.** Apply the operations in `steering-audit-suite/shared/refactoring.md`:
+   - **Split:** any document covering multiple unrelated concerns?
+   - **Join:** any documents that always need to be read together?
+   - **Merge:** any documents with overlapping or contradictory content?
+   - **Clone:** any pattern that should also live elsewhere?
+   - **Reformat:** any document whose content is one type but its format/location declares another?
+5. **Conflict and overlap analysis:**
+   - Do any two documents contradict each other?
+   - Do any two documents share the same trigger condition?
+   - Are any documents orphaned (referenced nowhere, invoked never)?
+6. **Vendor-mismatch analysis** (if the collection spans vendors):
+   - Are documents intended to apply across vendors duplicated correctly?
+   - Are documents in vendor-specific formats but with vendor-agnostic content (clone candidates)?
+7. **Kiro-specific structural checks:**
+   - Are `.kiro/steering/` files appropriately split by concern?
+   - Do `.kiro/specs/<feature>/` directories follow the standard structure (synopsis, requirements, design, tasks, WORKING-STATE)?
+   - Are steering files (`inclusion: always`) actually behavior-only, not procedural (which would belong in `specs/`)?
+8. **Produce the consolidated audit report** in the format defined in `steering-audit-suite/shared/output-format.md`.
+
+## Output Structure
+
+```
+# Collection Audit: <root path>
+
+## Inventory
+| Path | Type | Vendor | Status |
+|---|---|---|---|
+
+## Per-Document Findings
+### <path>
+<findings from audit-rule/skill/workflow>
+
+## Cross-Document Findings
+### Refactor: <operation>
+<source, destination, reason>
+
+### Conflicts
+<list of contradictions or overlapping triggers>
+
+### Orphans
+<documents referenced nowhere or never invoked>
+
+## Vendor Coverage
+<which document patterns exist in which vendor formats; gaps>
+```
+
+## Reference Files
+
+- `steering-audit-suite/shared/doc-types.md`
+- `steering-audit-suite/shared/checklist.md`
+- `steering-audit-suite/shared/refactoring.md`
+- `steering-audit-suite/shared/portability.md`
+- `steering-audit-suite/shared/reference-exemplars.md`
+- `steering-audit-suite/shared/output-format.md`
+
+## Anti-Patterns
+
+- Don't execute split/join/merge/clone/reformat operations without explicit authorization. Propose them. The author decides.
+- Don't propose vendor coverage for collections that are intentionally single-vendor.
+- Don't surface every per-document finding as a collection-level concern. Per-doc findings stay per-doc.

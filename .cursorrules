@@ -1,0 +1,29 @@
+# .cursorrules — gnomatix/skills
+
+This is a staging ground for agent-instruction artifacts (RULE / SKILL / WORKFLOW documents) maintained by GNOMATIX as a public-service contribution. Contributions are audited and cleaned by the steering audit suite at `steering-audit-suite/` before promotion to distribution channels.
+
+## Document Type Conventions
+
+Per Google Antigravity, Kiro IDE, and Cursor:
+
+- **RULE** — Always-loaded behavioral prescription (e.g., this file, `.cursor/rules/*.mdc` with `alwaysApply: true`)
+- **SKILL** — On-demand invocable capability with frontmatter (e.g., Cursor agent skills)
+- **WORKFLOW** — Multi-step procedure with phases and checkpoints
+
+Discriminators: `steering-audit-suite/shared/doc-types.md`.
+
+## Audit Suite
+
+Four audit skills exist: **audit-rule**, **audit-skill**, **audit-workflow**, **audit-collection**. Cursor-specific installations are pending — see `.cursor/README.md`. The canonical Claude Code variants are at `.claude/skills/audit-*/SKILL.md` and can be read for reference.
+
+## Conventions
+
+- Run the audit before submitting a PR
+- Frontmatter must match the target vendor's format
+- The `description` must tell a future user when to invoke (not internal mechanics)
+- Tool dependencies must be declared and degrade gracefully when the tool isn't available
+- No swipes at other models, vendors, or generations in the rule body
+
+## Authority
+
+GNOMATIX is the publisher. Brett Whitty is the project owner.
